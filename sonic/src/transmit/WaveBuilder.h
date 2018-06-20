@@ -6,5 +6,4 @@ int getSampleCount(int sampleRate, int sampleChannels, double duration);
 int makeWave(int sampleRate, int sampleChannels, double duration,
 				int freqValues[], int freqCount, short* out);
 
-
 #endif

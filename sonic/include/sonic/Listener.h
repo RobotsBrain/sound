@@ -16,15 +16,12 @@ class CListener
 
 public:
     CListener();
-
     ~CListener();
 
     bool Start();
-
     bool Stop();
 
     bool PutFrame(Base::CPacket const& frame);
-
     bool GetResult(Base::CBuffer& result);
 
 private:

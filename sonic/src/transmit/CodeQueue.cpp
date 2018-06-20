@@ -21,8 +21,6 @@
 
 
 
-
-
 #define QUEUE_COUNT     32
 #define QUEUE_LENGTH    20
 
@@ -45,8 +43,7 @@ CCodeQueue::CCodeQueue()
 {
     mImpl = new Impl;
 
-    for (int i = 0; i < QUEUE_COUNT; ++i)
-    {
+    for (int i = 0; i < QUEUE_COUNT; ++i) {
         init_queue(&mImpl->savedBuffer[i], QUEUE_LENGTH);
     }
 }
@@ -58,8 +55,7 @@ CCodeQueue::~CCodeQueue()
 
 inline void dump_queue(queue* q17, queue* q19)
 {
-    for (int i = 0; i < QUEUE_LENGTH; ++i)
-    {
+    for (int i = 0; i < QUEUE_LENGTH; ++i) {
         printf("[%02d] %f %f\n", i, queue_item_at_index(q17, i), queue_item_at_index(q19, i));
     }
 }
@@ -69,15 +65,14 @@ bool resultWithTimeSlice(queue* savedBuffer, std::vector<int>& res, std::vector<
     queue *q17 = &savedBuffer[17];
     queue *q19 = &savedBuffer[19];
 
-    if (!(queue_item_at_index(q17, 0) > 0.0 && queue_item_at_index(q19, 1) > 0.0))
-    {
+    if (!(queue_item_at_index(q17, 0) > 0.0
+            && queue_item_at_index(q19, 1) > 0.0)) {
         return false;
     }
 
     float value1 = queue_item_at_index(q17, 0) + queue_item_at_index(q19, 1);
     float value2 = queue_item_at_index(q17, 1) + queue_item_at_index(q19, 2);
-    if (value1 < value2)
-    {
+    if (value1 < value2) {
         return false;
     }
 
@@ -126,14 +121,12 @@ bool CCodeQueue::putFreqValues(std::vector<double> const& freqVaules)
 {
     assert(freqVaules.size() == QUEUE_COUNT);
 
-    for (int i = 0; i < (int)freqVaules.size(); ++i)
-    {
+    for (int i = 0; i < (int)freqVaules.size(); ++i) {
         enqueue(&mImpl->savedBuffer[i], freqVaules[i]);
     }
 
     DBG(printf("mImpl->savedBuffer[0].count=%d\n", mImpl->savedBuffer[0].count));
-    if (mImpl->savedBuffer[0].count >= mImpl->savedBuffer[0].length)
-    {
+    if (mImpl->savedBuffer[0].count >= mImpl->savedBuffer[0].length) {
 #if 0
         for (int i = 0; i < QUEUE_COUNT; ++i)
         {
@@ -142,8 +135,7 @@ bool CCodeQueue::putFreqValues(std::vector<double> const& freqVaules)
 #endif
 
         std::vector<int> res, rrr;
-        if (resultWithTimeSlice(mImpl->savedBuffer, res, rrr))
-        {
+        if (resultWithTimeSlice(mImpl->savedBuffer, res, rrr)) {
             //printf("res size(%d), rrr size(%d)\n", res.size(), rrr.size());
             mImpl->resultQueue.push_back(CodeResult());
             CodeResult& back = mImpl->resultQueue.back();
@@ -158,8 +150,7 @@ bool CCodeQueue::putFreqValues(std::vector<double> const& freqVaules)
 
 bool CCodeQueue::getResult(std::vector<int>& res, std::vector<int>& rrr)
 {
-    if (!mImpl->resultQueue.empty())
-    {
+    if (!mImpl->resultQueue.empty()) {
         DBG(printf("not empty\n"));
         CodeResult& front = mImpl->resultQueue.front();
         res.swap(front.res);
@@ -175,10 +166,9 @@ bool CCodeQueue::getResult(std::vector<int>& res, std::vector<int>& rrr)
 bool CCodeQueue::clearQueue()
 {
     DBG(printf("clear_all_queue\n"));
-    for (int i = 0; i < QUEUE_COUNT; ++i)
-    {
-        while (!queue_is_empty(&mImpl->savedBuffer[i]))
-        {
+
+    for (int i = 0; i < QUEUE_COUNT; ++i) {
+        while (!queue_is_empty(&mImpl->savedBuffer[i])) {
             dequeue(&mImpl->savedBuffer[i]);
         }
     }

@@ -12,7 +12,6 @@ class CCodeQueue
 
 public:
     CCodeQueue();
-
     ~CCodeQueue();
 
     bool putFreqValues(std::vector<double> const& freqVaules);

@@ -40,7 +40,7 @@ int gen_wave(const char* txtfile, const char* wavfile)
         }
 
         int write_bytes = fwrite(pcmdata.data(), 1, readBytes, fout);
-        printf("frame(%d) readBytes(%d) write_bytes(%d)\n", frameIndex, readBytes, write_bytes);
+        // printf("frame(%d) readBytes(%d) write_bytes(%d)\n", frameIndex, readBytes, write_bytes);
 
         ++frameIndex;
     }

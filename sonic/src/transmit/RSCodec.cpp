@@ -26,33 +26,24 @@ int getRSCodeLen(int srcLen)
 
 bool rsDecode(std::vector<int> const& res, std::vector<int> const& rrr, std::string& base32)
 {
-    //////////////  RS
-
     int temp[RS_TOTAL_LEN];
     int result[RS_TOTAL_LEN][RS_TOTAL_LEN];
     int counter = 0;
 
-    for (int i=0; i<RS_TOTAL_LEN; i++) 
-    {
-        for (int j=0; j<RS_TOTAL_LEN; j++) 
-        {
+    for (int i=0; i<RS_TOTAL_LEN; i++) {
+        for (int j=0; j<RS_TOTAL_LEN; j++) {
             result[i][j] = -1;
         }
     }
 
-    for (int k = 0; k < RS_TOTAL_LEN; k++) 
-    {
+    for (int k = 0; k < RS_TOTAL_LEN; k++) {
         DBG(printf("~~~~~~~ %02d :", k));
 
-        for (int i=0, j=0; i<RS_TOTAL_LEN; i++, j++) 
-        {
+        for (int i=0, j=0; i<RS_TOTAL_LEN; i++, j++) {
 
-            if (i <= k) 
-            {
+            if (i <= k) {
                 temp[j] = res[i];
-            }
-            else 
-            {
+            } else {
                 temp[j] = rrr[i];
             }
 
@@ -66,19 +57,15 @@ bool rsDecode(std::vector<int> const& res, std::vector<int> const& rrr, std::str
 
         unsigned char data1[RS_TOTAL_LEN];
 
-        for (int i=0; i<RS_TOTAL_LEN; i++) 
-        {
+        for (int i=0; i<RS_TOTAL_LEN; i++) {
             data1[i] = temp[i];
         }
 
         int count = decode_rs_char(rs, data1, eras_pos, 0);
 
         /////////////////
-
-        if (count >= 0) 
-        {
+        if (count >= 0) {
             for (int m = 0; m<RS_TOTAL_LEN; m++) {
-
                 result[m][counter] = data1[m];
             }
 
@@ -86,8 +73,7 @@ bool rsDecode(std::vector<int> const& res, std::vector<int> const& rrr, std::str
         }
 
 #ifdef SONIC_DEBUG
-        for (int i=0; i<RS_TOTAL_LEN; i++) 
-        {
+        for (int i=0; i<RS_TOTAL_LEN; i++) {
             printf("%02d ", data1[i]);
         }
         printf("    %d\n", count);
@@ -97,10 +83,8 @@ bool rsDecode(std::vector<int> const& res, std::vector<int> const& rrr, std::str
     int temp_vote[RS_TOTAL_LEN] = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
     int final_result[RS_TOTAL_LEN] = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
 
-    for (int i=0; i<RS_TOTAL_LEN; i++) 
-    {
-        for (int j=0; j<RS_TOTAL_LEN; j++) 
-        {
+    for (int i=0; i<RS_TOTAL_LEN; i++) {
+        for (int j=0; j<RS_TOTAL_LEN; j++) {
             temp_vote[j] = result[i][j];
         }
 
@@ -110,30 +94,23 @@ bool rsDecode(std::vector<int> const& res, std::vector<int> const& rrr, std::str
     DBG(printf("\n ================== final result ================== \n\n"));
 
     int ret = false;
-    if (counter == 0)
-    {
+    if (counter == 0) {
         DBG(printf("fail!"));
 #ifdef __ANDROID__
         __android_log_print(ANDROID_LOG_WARN, "JNIMsg", "Failed");
 #endif
-    }
-    else
-    {
+    } else {
         //printf("successes!\n");
         base32.resize(0);
         unsigned int checksum = 0;
 
-        for (int i = 0; i < RS_TOTAL_LEN; i++) 
-        {
-
+        for (int i = 0; i < RS_TOTAL_LEN; i++) {
             printf("%02x ", final_result[i]);
             //__android_log_print(ANDROID_LOG_INFO, "JNIMsg", "%02d", final_result[i]);
 
-            if (i < RS_DATA_LEN)
-            {
+            if (i < RS_DATA_LEN) {
                 checksum ^= final_result[i];
-                if (i < RS_DATA_LEN - 1)
-                {
+                if (i < RS_DATA_LEN - 1) {
                     char res_char = ' ';
                     num_to_char(final_result[i], &res_char);
                     base32.push_back(res_char);
@@ -141,18 +118,17 @@ bool rsDecode(std::vector<int> const& res, std::vector<int> const& rrr, std::str
             }
         }
 
+        printf("\n");
+
         // verify checksum
-        if ((checksum & 0x1F) == 0)
-        {
+        if ((checksum & 0x1F) == 0) {
 #ifdef __ANDROID__
             __android_log_print(ANDROID_LOG_INFO, "JNIMsg", "Successes: %s", base32.c_str());
 #else
-            printf("Successes: %s, checksum(%x)\n", base32.c_str(), checksum);
+            printf("success: %s, checksum(%x)\n", base32.c_str(), checksum);
 #endif
             ret = true;
-        }
-        else
-        {
+        } else {
             printf("checksum failed! checksum(%02x)\n", checksum);
         }
     }

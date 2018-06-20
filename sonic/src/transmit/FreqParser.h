@@ -9,11 +9,9 @@ class CFreqParser
 
 public:
     CFreqParser(int sampleRate, int sampleChannels, double duration);
-
     ~CFreqParser();
 
     bool open();
-
     bool close();
 
     bool putAudioData(const short* pcmData, int samples);

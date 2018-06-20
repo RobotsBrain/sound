@@ -100,7 +100,8 @@ int fft_pcm16(const char* filename, const char* outfile)
         }
 
         parser.putAudioData(s16_wave.data(), s16_wave.size());
-        while (parser.getResult(freq_values)) {
+
+        while(parser.getResult(freq_values)) {
             codequeue.putFreqValues(freq_values);
 
             //buf_norm_to_u8(freq_values.begin(), freq_values.end(), freq_val_u8.begin());
@@ -111,6 +112,7 @@ int fft_pcm16(const char* filename, const char* outfile)
             printf("frame(%d) read_bytes(%d) write_bytes(%d)\n", frame_index, read_bytes, write_bytes);
 
             std::vector<int> res, rrr;
+
             while(codequeue.getResult(res, rrr)) {
                 printf("res size(%d) content: ", res.size());
                 std::copy(res.begin(), res.end(), std::ostream_iterator<int>(std::cout, " "));
@@ -120,8 +122,9 @@ int fft_pcm16(const char* filename, const char* outfile)
                 printf("\n");
 
                 std::string base32;
-                rsDecode(rrr, res, base32);
-                printf("base32: %s\n", base32.c_str());
+                if(rsDecode(rrr, res, base32) == true) {
+                    printf("base32: %s\n", base32.c_str());   
+                }
             }
         }
 

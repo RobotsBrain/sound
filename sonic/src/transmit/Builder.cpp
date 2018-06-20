@@ -1,9 +1,9 @@
 #include <stdint.h>
-#include <string>
-#include <vector>
+#include <algorithm>
 #include <iterator>
 #include <iostream>
-#include <algorithm>
+#include <string>
+#include <vector>
 
 #ifdef __ANDROID__
 #include <android/log.h>
@@ -47,15 +47,14 @@ struct CBuilder::Impl
     void pushToFreqValues(int block, uint8_t byte)
     {
         int blockBitCount = BITCOUNT_PER_BYTE * BLOCK_DATA_BYTES;
-        if (mRemainBitCount >= BITCOUNT_PER_BYTE)
-        {
+
+        if (mRemainBitCount >= BITCOUNT_PER_BYTE) {
             mBlockBits |= uint64_t(byte) << (blockBitCount - mRemainBitCount);
             mRemainBitCount -= BITCOUNT_PER_BYTE;
-            //printf("data(%02x) mBlockBits(0x%016llx)\n", byte, mBlockBits);
+            // printf("data(%02x) mBlockBits(0x%016llx)\n", byte, mBlockBits);
         }
 
-        if (mRemainBitCount <= 0)
-        {
+        if (mRemainBitCount <= 0) {
             uint64_t blockBits = mBlockBits;
             mBlockBits >>= blockBitCount;
             mRemainBitCount += blockBitCount;
@@ -72,16 +71,17 @@ struct CBuilder::Impl
             printf("block index(%d) freqs(%s)\n", block, freqs.c_str());
 
             // data to 8 freqency
-            for (int i = 0; i < freqCount; ++i)
-            {
+            for (int i = 0; i < freqCount; ++i) {
                 int freq = blockBits & MASK_OF_FREQ;
                 blockBits >>= BITCOUNT_PER_FREQ;
 
                 char ch = 0;
                 num_to_char(freq, &ch);
-                //printf("freq(%02x) base32(%02x)(%c)\n", freq, ch, ch);
+                // printf("freq(%02x) base32(%02x)(%c)\n", freq, ch, ch);
                 freqs.push_back(ch);
             }
+
+            printf("freqs(%s)\n", freqs.c_str());
 
 #ifdef __ANDROID__
             __android_log_print(ANDROID_LOG_INFO, "wavelink", "block index(%d) freqs(%s)\n", block, freqs.c_str());
@@ -116,31 +116,22 @@ bool CBuilder::SetContent(void const* content, int bytes)
 
     mImpl->initFreqValues(block_count);
 
-    for (int block = 0; block < block_count; ++block)
-    {
+    for(int block = 0; block < block_count; ++block) {
         int loop_count = 1;
-        if (block == 0) // for head
-        {
+        if(block == 0) { // for head
             loop_count = 2;
         }
 
-        for (int loop = 0; loop < loop_count; ++loop)
-        {
+        for(int loop = 0; loop < loop_count; ++loop) {
             int offset = block * BLOCK_DATA_BYTES - HEADER_BYTES;
-            for (int i = 0; i < BLOCK_DATA_BYTES; ++i)
-            {
+            for (int i = 0; i < BLOCK_DATA_BYTES; ++i) {
                 int idx = offset + i;
-                if (idx >= 0 && idx < bytes)
-                {
+                if (idx >= 0 && idx < bytes) {
                     uint8_t const* ptr = (uint8_t const*)content;
                     mImpl->pushToFreqValues(block, *(ptr + idx));
-                }
-                else if (idx == -1)
-                {
+                } else if (idx == -1) {
                     mImpl->pushToFreqValues(block, bytes); // HEADER
-                }
-                else
-                {
+                } else {
                     mImpl->pushToFreqValues(block, i*4 + 'a');     // TAIL etc.
                 }
             }
@@ -156,16 +147,14 @@ bool CBuilder::SetContent(void const* content, int bytes)
 /// read pcm until no data, return valid bytes
 int CBuilder::ReadPcm(void* buf, int bytes)
 {
-    if (mImpl->mFreqPos >= (int)mImpl->mFreqIndexes.size())
-    {
+    if (mImpl->mFreqPos >= (int)mImpl->mFreqIndexes.size()) {
         printf("no freqency data\n");
         return 0;
     }
 
     int sample_num = getSampleCount(SAMPLE_RATE, SAMPLE_CHANNEL, DURATION);
     int wantCount = bytes / sizeof(short) / sample_num;
-    if (wantCount <= 0)
-    {
+    if (wantCount <= 0) {
         printf("buf not enough!\n");
         return 0;
     }
@@ -179,6 +168,7 @@ int CBuilder::ReadPcm(void* buf, int bytes)
 #ifdef __ANDROID__
     __android_log_print(ANDROID_LOG_INFO, "wavelink", "sample_num(%d) realCount(%d)\n", sample_num, realCount);
 #endif
+
     return sample_num * realCount * sizeof(short);
 }
 

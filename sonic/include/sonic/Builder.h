@@ -12,7 +12,6 @@ class CBuilder
 
 public:
     CBuilder();
-
     ~CBuilder();
 
     bool SetContent(void const* content, int bytes);
