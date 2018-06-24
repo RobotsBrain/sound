@@ -11,11 +11,6 @@
 #include "transmit/config.h"
 
 
-// #define DURATION                0.03  // seconds
-// #define SAMPLE_RATE             16000
-// #define SAMPLE_CHANNEL          1
-
-
 
 template <class InIt, class OutIt>
 void buf_short_to_float(InIt first, InIt last, OutIt out)
