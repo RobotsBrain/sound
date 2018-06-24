@@ -21,10 +21,31 @@ namespace Sonic {
 
 struct CBuilder::Impl
 {
-    uint64_t mBlockBits;
-    int mRemainBitCount;
-    std::vector<int> mFreqIndexes;
-    int mFreqPos;
+    int                 mFreqPos;
+    int                 mRemainBitCount;
+    uint64_t            mBlockBits;
+    int                 m_sampleRate;
+    int                 m_channel;
+    float               m_duration;
+    std::vector<int>    mFreqIndexes;
+    
+    void setSampleParams(int sampleRate, int channel, float duration)
+    {
+        m_sampleRate = sampleRate;
+        m_channel = channel;
+        m_duration = duration;
+
+        return;
+    }
+
+    void getSampleParams(int& sampleRate, int& channel, float& duration)
+    {
+        sampleRate = m_sampleRate;
+        channel = m_channel;
+        duration = m_duration;
+
+        return;
+    }
 
     void initFreqValues(int blockCount)
     {
@@ -103,7 +124,7 @@ CBuilder::~CBuilder()
 
 void CBuilder::SetSampleParams(int sampleRate, int channel, float duration)
 {
-    return;
+    return mImpl->setSampleParams(sampleRate, channel, duration);
 }
 
 bool CBuilder::SetContent(void const* content, int bytes)
@@ -148,7 +169,13 @@ int CBuilder::ReadPcm(void* buf, int bytes)
         return 0;
     }
 
-    int sample_num = getSampleCount(SAMPLE_RATE, SAMPLE_CHANNEL, DURATION);
+    int sampleRate;
+    int channel;
+    float duration;
+
+    mImpl->getSampleParams(sampleRate, channel, duration);
+
+    int sample_num = getSampleCount(sampleRate, channel, duration);
     int wantCount = bytes / sizeof(short) / sample_num;
     if (wantCount <= 0) {
         printf("buf not enough!\n");
@@ -158,7 +185,7 @@ int CBuilder::ReadPcm(void* buf, int bytes)
     int remainCount = mImpl->mFreqIndexes.size() - mImpl->mFreqPos;
     int realCount = remainCount < wantCount ? remainCount : wantCount;
 
-    makeWave(SAMPLE_RATE, SAMPLE_CHANNEL, DURATION, &mImpl->mFreqIndexes[mImpl->mFreqPos], realCount, (short*)buf);
+    makeWave(sampleRate, channel, duration, &mImpl->mFreqIndexes[mImpl->mFreqPos], realCount, (short*)buf);
     mImpl->mFreqPos += realCount;
 
 #ifdef __ANDROID__
@@ -170,7 +197,13 @@ int CBuilder::ReadPcm(void* buf, int bytes)
 
 int CBuilder::GetDuration()
 {
-    double duration = DURATION * mImpl->mFreqIndexes.size();
+    int sampleRate;
+    int channel;
+    float dura;
+
+    mImpl->getSampleParams(sampleRate, channel, dura);
+
+    double duration = dura * mImpl->mFreqIndexes.size();
 
     return duration * 1000; // to ms
 }
