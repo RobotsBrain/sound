@@ -43,6 +43,7 @@ int test_listen(const char* filename)
         return -1;
     }
 
+    int frame_index = 0;
     Sonic::CListener listener;
     listener.Start();
 
@@ -58,6 +59,7 @@ int test_listen(const char* filename)
             } else {                
                 s16_wave.SetDataRange(0, read_bytes);
                 listener.PutFrame(s16_wave);
+                printf("frame(%d) read_bytes(%d)\n", frame_index, read_bytes);
             }
         }
 
@@ -72,7 +74,9 @@ int test_listen(const char* filename)
             break;
         }
 
-        usleep(20000);
+        frame_index++;
+
+        usleep(2000);
     }
 
     listener.Stop();

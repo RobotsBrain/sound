@@ -124,7 +124,7 @@ bool CCodeQueue::putFreqValues(std::vector<double> const& freqVaules)
         enqueue(&mImpl->savedBuffer[i], freqVaules[i]);
     }
 
-    DBG(printf("mImpl->savedBuffer[0].count=%d\n", mImpl->savedBuffer[0].count));
+    // printf("mImpl->savedBuffer[0].count=%d\n", mImpl->savedBuffer[0].count);
     if (mImpl->savedBuffer[0].count >= mImpl->savedBuffer[0].length) {
 #if 0
         for (int i = 0; i < QUEUE_COUNT; ++i)
@@ -150,7 +150,7 @@ bool CCodeQueue::putFreqValues(std::vector<double> const& freqVaules)
 bool CCodeQueue::getResult(std::vector<int>& res, std::vector<int>& rrr)
 {
     if (!mImpl->resultQueue.empty()) {
-        DBG(printf("not empty\n"));
+        // printf("not empty\n");
         CodeResult& front = mImpl->resultQueue.front();
         res.swap(front.res);
         rrr.swap(front.rrr);

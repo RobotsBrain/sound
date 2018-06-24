@@ -2,6 +2,9 @@
 #include <string>
 #include <vector>
 #include <deque>
+#include <algorithm>
+#include <iostream>
+#include <iterator>
 
 #include "base/Mutex.h"
 #include "base/LoopThread.h"
@@ -30,8 +33,8 @@ class CListenerImpl : public Base::CLoopThread
 
 public:
     CListenerImpl() 
-        : Base::CLoopThread("WaveTransmit")
-        , mParser(SAMPLE_RATE, SAMPLE_CHANNEL, DURATION)
+    : Base::CLoopThread("WaveTransmit")
+    , mParser(SAMPLE_RATE, SAMPLE_CHANNEL, DURATION)
     {
         mBlockMask = 0xFFFFFFFF;
         mBlocks.resize(BLOCK_COUNT);
@@ -166,7 +169,6 @@ private:
     void ProcessFrames(bool& exitflag)
     {
         while (1) {
-            //TRACEPOINT();
             Base::CPacket packet;
             {
                 Base::CMutex::ScopedLock lock(mFramesMutex);
@@ -198,21 +200,25 @@ private:
         std::vector<double> freq_values;
 
         while (mParser.getResult(freq_values)) {
-            //TRACEPOINT();
             mCodequeue.putFreqValues(freq_values);
 
             std::vector<int> res, rrr;
             while (mCodequeue.getResult(res, rrr)) {
-                //TRACEPOINT();
+                printf("res size(%d) content: ", res.size());
+                std::copy(res.begin(), res.end(), std::ostream_iterator<int>(std::cout, " "));
+                printf("\n");
+                printf("rrr size(%d) content: ", rrr.size());
+                std::copy(rrr.begin(), rrr.end(), std::ostream_iterator<int>(std::cout, " "));
+                printf("\n");
+
                 std::string base32;
+
                 if (rsDecode(rrr, res, base32)) {
                     mCodequeue.clearQueue();
                     printf("base32 result: %s\n", base32.c_str());
                     PushToBlocks(base32);
                 }
-                //TRACEPOINT();
             }
-            //TRACEPOINT();
 
             int sig = WaitSignal(0);
             if (sig == -1) {
