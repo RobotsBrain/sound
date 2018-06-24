@@ -66,10 +66,13 @@ void buf_norm_to_s16(InIt first, InIt last, OutIt out)
 
 int fft_pcm16(const char* filename, const char* outfile)
 {
-    int sample_num = (DURATION * SAMPLE_RATE * SAMPLE_CHANNEL);
+    float duration = 0.03;
+    int sampleRate = 16000;
+    int channel = 1;
+    int sample_num = (duration * sampleRate * channel);
     printf("sample num: %d\n", sample_num);
 
-    CFreqParser parser(SAMPLE_RATE, SAMPLE_CHANNEL, DURATION);
+    CFreqParser parser(sampleRate, channel, duration);
     CCodeQueue codequeue;
     std::vector<short> s16_wave(1600);
     std::vector<double> freq_values(32);
