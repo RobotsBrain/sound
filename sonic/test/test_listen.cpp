@@ -72,7 +72,7 @@ int test_listen(const char* filename)
             break;
         }
 
-        usleep(200);
+        usleep(20000);
     }
 
     listener.Stop();

@@ -15,9 +15,7 @@ public:
     bool close();
 
     bool putAudioData(const short* pcmData, int samples);
-
-    /// get frequency db, include 17, 19 and rscode
-    bool getResult(std::vector<double>& freqValues);
+    bool getResult(std::vector<double>& freqValues); // get frequency db, include 17, 19 and rscode
 
 private:
     struct Impl;

@@ -15,9 +15,7 @@ public:
     ~CCodeQueue();
 
     bool putFreqValues(std::vector<double> const& freqVaules);
-
     bool getResult(std::vector<int>& res, std::vector<int>& rrr);
-
     bool clearQueue();
 
 private:

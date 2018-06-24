@@ -31,7 +31,6 @@ struct CodeResult
     std::vector<int> rrr;
 };
 
-
 struct CCodeQueue::Impl
 {
     queue savedBuffer[QUEUE_COUNT];
