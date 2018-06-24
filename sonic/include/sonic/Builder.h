@@ -14,6 +14,7 @@ public:
     CBuilder();
     ~CBuilder();
 
+    void SetSampleParams(int sampleRate, int channel, float duration);
     bool SetContent(void const* content, int bytes);
 
     /// read pcm until no data, return valid bytes

@@ -101,6 +101,11 @@ CBuilder::~CBuilder()
     delete mImpl;
 }
 
+void CBuilder::SetSampleParams(int sampleRate, int channel, float duration)
+{
+    return;
+}
+
 bool CBuilder::SetContent(void const* content, int bytes)
 {
     int block_count = (bytes + HEADER_BYTES + BLOCK_DATA_BYTES - 1) / BLOCK_DATA_BYTES;
