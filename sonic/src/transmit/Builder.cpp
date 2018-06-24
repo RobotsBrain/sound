@@ -26,10 +26,10 @@ struct CBuilder::Impl
     uint64_t            mBlockBits;
     int                 m_sampleRate;
     int                 m_channel;
-    float               m_duration;
+    double               m_duration;
     std::vector<int>    mFreqIndexes;
     
-    void setSampleParams(int sampleRate, int channel, float duration)
+    void setSampleParams(int sampleRate, int channel, double duration)
     {
         m_sampleRate = sampleRate;
         m_channel = channel;
@@ -38,7 +38,7 @@ struct CBuilder::Impl
         return;
     }
 
-    void getSampleParams(int& sampleRate, int& channel, float& duration)
+    void getSampleParams(int& sampleRate, int& channel, double& duration)
     {
         sampleRate = m_sampleRate;
         channel = m_channel;
@@ -122,7 +122,7 @@ CBuilder::~CBuilder()
     delete mImpl;
 }
 
-void CBuilder::SetSampleParams(int sampleRate, int channel, float duration)
+void CBuilder::SetSampleParams(int sampleRate, int channel, double duration)
 {
     return mImpl->setSampleParams(sampleRate, channel, duration);
 }
@@ -171,7 +171,7 @@ int CBuilder::ReadPcm(void* buf, int bytes)
 
     int sampleRate;
     int channel;
-    float duration;
+    double duration;
 
     mImpl->getSampleParams(sampleRate, channel, duration);
 
@@ -199,7 +199,7 @@ int CBuilder::GetDuration()
 {
     int sampleRate;
     int channel;
-    float dura;
+    double dura;
 
     mImpl->getSampleParams(sampleRate, channel, dura);
 

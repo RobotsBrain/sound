@@ -622,11 +622,11 @@ int post_process(bb_item_group *src, int src_len, bb_item_group *result, int res
 /////////////////////
 
 // 一个频率对应的一组PCM的buffer
-int encode_sound(unsigned int freq, float buffer[], size_t buffer_length) {
+int encode_sound(int sample_rate, unsigned int freq, float buffer[], size_t buffer_length) {
     
     
     const double amplitude = 0.25;
-	double theta_increment = 2.0 * PI * freq / SAMPLE_RATE;
+	double theta_increment = 2.0 * PI * freq / sample_rate;
 	int frame;
     
 	for (frame = 0; frame < buffer_length; frame++) {

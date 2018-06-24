@@ -22,15 +22,12 @@
 
 
 #define PI                      3.1415926535897932384626433832795028841971               //定义圆周率值
-#define SAMPLE_RATE             16000                                                    //采样频率
-
 //#define BB_SEMITONE 			1.059463094	// 2^(1/12)
 #define BB_QUADTONE             1.0293022366434920287823718007739   ///< 2^(1/24)
 #define BB_FREQUENCY_STEP       BB_QUADTONE
 #define BB_BASEFREQUENCY		2794		// 880Hz(A5) 1760(A6) 1318.51023(E6) 1046.502261(C6) 2793.8259(F7)
 #define BB_BASEFREQUENCY_H		18032
 #define BB_BASEFREQUENCY_IS_H	1
-
 #define BB_CHARACTERS			"0123456789abcdefghijklmnopqrstuv"
 
 //#define BB_FREQUENCIES          {1765,1856,1986,2130,2211,2363,2492,2643,2799,2964,3243,3316,3482,3751,3987,4192,4430,4794,5000,5449,5598,5900,6262,6627,7004,7450,7881,8174,8906,9423,9948,10536}
@@ -88,7 +85,7 @@ int get_group_data(bb_item_group *src, int src_len, int *result, int res_len);
 int post_process(bb_item_group *src, int src_len, bb_item_group *result, int res_len);
 
 /////////
-int encode_sound(unsigned int freq, float buffer[], size_t buffer_length);
+int encode_sound(int sample_rate, unsigned int freq, float buffer[], size_t buffer_length);
 
 int create_sending_code(unsigned char *src, unsigned char *result, int res_len);
 

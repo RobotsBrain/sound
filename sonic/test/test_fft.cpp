@@ -66,7 +66,7 @@ void buf_norm_to_s16(InIt first, InIt last, OutIt out)
 
 int fft_pcm16(const char* filename, const char* outfile)
 {
-    float duration = 0.03;
+    double duration = 0.03;
     int sampleRate = 16000;
     int channel = 1;
     int sample_num = (duration * sampleRate * channel);
