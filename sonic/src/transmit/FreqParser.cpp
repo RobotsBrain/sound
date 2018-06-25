@@ -23,14 +23,6 @@ struct CFreqParser::Impl
     Impl(int sample_num) : fftbm(sample_num) {}
 };
 
-// CFreqParser::CFreqParser(int sampleRate, int sampleChannels, double duration)
-// {
-//     int sample_num = (duration * sampleRate * sampleChannels);
-//     printf("sample_num(%d)\n", sample_num);
-//     mImpl = new Impl(sample_num);
-//     mImpl->sampleRate = sampleRate;
-//     mImpl->fftData.resize(sample_num/2);
-// }
 
 CFreqParser::CFreqParser()
 {

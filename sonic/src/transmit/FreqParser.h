@@ -8,7 +8,6 @@ class CFreqParser
     CFreqParser& operator=(CFreqParser const&);
 
 public:
-    // CFreqParser(int sampleRate, int sampleChannels, double duration);
     CFreqParser();
     ~CFreqParser();
 
@@ -18,7 +17,7 @@ public:
     bool close();
 
     bool putAudioData(const short* pcmData, int samples);
-    bool getResult(std::vector<double>& freqValues); // get frequency db, include 17, 19 and rscode
+    bool getResult(std::vector<double>& freqValues);
 
 private:
     struct Impl;
