@@ -1,6 +1,6 @@
-
 #include <string.h>
 #include <pthread.h>
+
 #include "base/StaticAssert.h"
 #include "base/Mutex.h"
 

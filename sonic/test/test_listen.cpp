@@ -47,10 +47,9 @@ int test_listen(const char* filename)
     Sonic::CListener listener;
     listener.Start();
 
-    Base::CPacket s16_wave = create_frame(3200);
-
     while (1) {
         if (!feof(fin)) {
+            Base::CPacket s16_wave = create_frame(3200);
             s16_wave.SetDataRange(0, 3200);
             int read_bytes = fread(s16_wave.Data(), 1, s16_wave.DataSize(), fin);
             if (read_bytes <= 0) {

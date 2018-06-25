@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "base/Atomic.h"
 #include "base/MemoryPool.h"
 
 
@@ -17,11 +16,6 @@
 
 
 namespace {
-
-
-static Base::AtomicInt s_all_pool_bytes = 0;
-
-
 
 #ifdef BASE_DEBUG
 static void dumphex(void* ptr, int bytes)
@@ -52,6 +46,14 @@ static void dumphex(void* ptr, int bytes)
 
 namespace Base {
 
+typedef long AtomicInt;
+
+int AtomicAdd(AtomicInt* c, int v)
+{
+    return __sync_add_and_fetch(c, v);
+}
+
+static Base::AtomicInt s_all_pool_bytes = 0;
 
 struct CMemoryPool::Impl
 {
