@@ -13,6 +13,7 @@
 
 #include "sonic/Listener.h"
 
+#include "common.h"
 
 
 struct AudioPacketPoolTag {};
@@ -45,7 +46,7 @@ int test_listen(const char* filename)
 
     int frame_index = 0;
     Sonic::CListener listener;
-    listener.Start();
+    listener.Start(SAMPLE_RATE, SAMPLE_CHANNEL, DURATION);
 
     while (1) {
         if (!feof(fin)) {

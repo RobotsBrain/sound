@@ -18,7 +18,7 @@ public:
     CListener();
     ~CListener();
 
-    bool Start();
+    bool Start(int sampleRate, int sampleChannels, double duration);
     bool Stop();
 
     bool PutFrame(Base::CPacket const& frame);

@@ -5,6 +5,8 @@
 #include "transmit/RSCodec.h"
 #include "sonic/Builder.h"
 
+#include "common.h"
+
 
 
 int gen_wave(const char* txtfile, const char* wavfile)
@@ -27,7 +29,7 @@ int gen_wave(const char* txtfile, const char* wavfile)
     printf("linebytes(%d) len(%d) (%s)\n", linebytes, len, line);
 
     Sonic::CBuilder builder;
-    builder.SetSampleParams(16000, 1, 0.03);
+    builder.SetSampleParams(SAMPLE_RATE, SAMPLE_CHANNEL, DURATION);
     builder.SetContent(line, linebytes);
     free(line);
 

@@ -34,7 +34,6 @@ class CListenerImpl : public Base::CLoopThread
 public:
     CListenerImpl() 
     : Base::CLoopThread("WaveTransmit")
-    , mParser(SAMPLE_RATE, SAMPLE_CHANNEL, DURATION)
     {
         mBlockMask = 0xFFFFFFFF;
         mBlocks.resize(BLOCK_COUNT);
@@ -45,9 +44,10 @@ public:
         Stop();
     }
 
-    bool Start()
+    bool Start(int sampleRate, int sampleChannels, double duration)
     {
         mBlockMask = 0xFFFFFFFF;
+        mParser.SetSampleParams(sampleRate, sampleChannels, duration);
         return StartThread();
     }
 
@@ -245,9 +245,9 @@ CListener::~CListener()
     delete mImpl;
 }
 
-bool CListener::Start()
+bool CListener::Start(int sampleRate, int sampleChannels, double duration)
 {
-    return mImpl->impl.Start();
+    return mImpl->impl.Start(sampleRate, sampleChannels, duration);
 }
 
 bool CListener::Stop()

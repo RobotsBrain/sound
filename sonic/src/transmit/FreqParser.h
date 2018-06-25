@@ -8,8 +8,11 @@ class CFreqParser
     CFreqParser& operator=(CFreqParser const&);
 
 public:
-    CFreqParser(int sampleRate, int sampleChannels, double duration);
+    // CFreqParser(int sampleRate, int sampleChannels, double duration);
+    CFreqParser();
     ~CFreqParser();
+
+    void SetSampleParams(int sampleRate, int sampleChannels, double duration);
 
     bool open();
     bool close();
