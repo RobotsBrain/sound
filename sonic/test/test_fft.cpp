@@ -1,5 +1,7 @@
+#include <unistd.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <libgen.h>
 #include <vector>
 #include <algorithm>
 #include <iostream>
@@ -10,7 +12,6 @@
 #include "transmit/CodeQueue.h"
 #include "transmit/config.h"
 
-#include "common.h"
 
 
 template <class InIt, class OutIt>
@@ -65,15 +66,12 @@ void buf_norm_to_s16(InIt first, InIt last, OutIt out)
     }
 }
 
-int fft_pcm16(const char* filename, const char* outfile)
+int fft_pcm16(const char* filename, const char* outfile,
+                int sampleRate, int channel, double duration)
 {
-    double duration = DURATION;
-    int sampleRate = SAMPLE_RATE;
-    int channel = SAMPLE_CHANNEL;
     int sample_num = (duration * sampleRate * channel);
     printf("sample num: %d\n", sample_num);
 
-    // CFreqParser parser(sampleRate, channel, duration);
     CFreqParser parser;
     CCodeQueue codequeue;
     std::vector<short> s16_wave(1600);
@@ -141,14 +139,42 @@ int fft_pcm16(const char* filename, const char* outfile)
 
 int main(int argc, char* argv[])
 {
-    printf("hello\n");
+    int res = -1;
+    int sampleRate = 16000;
+    int channel = 1;
+    double duration = 0.03;
+    char pcm[256] = {0};
+    char fft[256] = {0};
 
-    if (argc < 3) {
-        printf("usage: test_fft <pcm filename> <freq filename>\n");
-        return -1;
+    while((res = getopt(argc, argv, "?f:p:s:d:c:h")) != -1) {
+        switch(res) {
+        case 't':
+            strcpy(fft, optarg);
+            break;
+
+        case 'p':
+            strcpy(pcm, optarg);
+            break;
+
+        case 's':
+            sampleRate = atoi(optarg);
+            break;
+
+        case 'd':
+            duration = atoi(optarg)/1000;
+            break;
+
+        case 'c':
+            channel = atoi(optarg);
+            break;
+
+        case 'h':
+        default:
+            return -1;
+        }
     }
 
-    fft_pcm16(argv[1], argv[2]);
+    fft_pcm16(pcm, fft, sampleRate, channel, duration);
 
     return 0;
 }

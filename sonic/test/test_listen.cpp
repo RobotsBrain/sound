@@ -1,7 +1,10 @@
-#include <assert.h>
-#include <stdio.h>
+#include <stdlib.h>
 #include <stdint.h>
 #include <unistd.h>
+#include <string.h>
+#include <libgen.h>
+#include <assert.h>
+#include <stdio.h>
 #include <vector>
 #include <algorithm>
 #include <iostream>
@@ -12,8 +15,6 @@
 #include "base/SingletonPool.h"
 
 #include "sonic/Listener.h"
-
-#include "common.h"
 
 
 struct AudioPacketPoolTag {};
@@ -37,7 +38,7 @@ inline Base::CPacket create_frame(int framesize)
 }
 
 
-int test_listen(const char* filename)
+int test_listen(const char* filename, int sampleRate, int channel, double duration)
 {
     FILE* fin = fopen(filename, "r");
     if (!fin) {
@@ -46,7 +47,7 @@ int test_listen(const char* filename)
 
     int frame_index = 0;
     Sonic::CListener listener;
-    listener.Start(SAMPLE_RATE, SAMPLE_CHANNEL, DURATION);
+    listener.Start(sampleRate, channel, duration);
 
     while (1) {
         if (!feof(fin)) {
@@ -88,14 +89,37 @@ int test_listen(const char* filename)
 
 int main(int argc, char* argv[])
 {
-    printf("hello\n");
+    int res = -1;
+    int sampleRate = 16000;
+    int channel = 1;
+    double duration = 0.03;
+    char pcm[256] = {0};
 
-    if (argc < 2) {
-        printf("usage: test_fft <pcm filename>\n");
-        return -1;
+    while((res = getopt(argc, argv, "?p:s:d:c:h")) != -1) {
+        switch(res) {
+        case 'p':
+            strcpy(pcm, optarg);
+            break;
+
+        case 's':
+            sampleRate = atoi(optarg);
+            break;
+
+        case 'd':
+            duration = atoi(optarg)/1000;
+            break;
+
+        case 'c':
+            channel = atoi(optarg);
+            break;
+
+        case 'h':
+        default:
+            return -1;
+        }
     }
 
-    test_listen(argv[1]);
+    test_listen(pcm, sampleRate, channel, duration);
 
     return 0;
 }
