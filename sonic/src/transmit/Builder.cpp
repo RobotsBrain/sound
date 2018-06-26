@@ -80,31 +80,6 @@ void makeChirp(short buffer[],int bufferLength,unsigned int freqArray[], int fre
     return;
 }
 
-int makeWave(int sampleRate, int sampleChannels, double duration, std::vector<unsigned int>& freqIndexes, std::vector<short>& pcm)
-{
-    int sample_num = (duration * sampleRate * sampleChannels);
-    printf("sample num: %d\n", sample_num);
-
-    int freqCount = freqIndexes.size();
-    std::vector<unsigned int> freqValues(freqCount);
-    for(int i = 0; i < freqCount; ++i) {
-        num_to_freq(freqIndexes[i], &freqValues[i]);
-    }
-
-    int pcm_count = sample_num * freqCount;
-    pcm.resize(pcm_count);
-
-    makeChirp(pcm.data(), pcm.size(), freqValues.data(), freqValues.size(), duration, sampleRate, sampleChannels);
-
-    return 0;
-}
-
-/// 获取指定时间的音频采样点数量
-int getSampleCount(int sampleRate, int sampleChannels, double duration)
-{
-    return duration * sampleRate * sampleChannels;
-}
-
 int makeWave(int sampleRate, int sampleChannels, double duration, int freqIndexes[], int freqCount, short* out)
 {
     int sample_num = (duration * sampleRate * sampleChannels);
@@ -277,7 +252,7 @@ int CBuilder::ReadPcm(void* buf, int bytes)
 
     mImpl->getSampleParams(sampleRate, channel, duration);
 
-    int sample_num = getSampleCount(sampleRate, channel, duration);
+    int sample_num = duration * sampleRate *channel;
     int wantCount = bytes / sizeof(short) / sample_num;
     if (wantCount <= 0) {
         printf("buf not enough!\n");
