@@ -8,17 +8,6 @@
 
 
 
-//#define SONIC_DEBUG
-
-#ifdef SONIC_DEBUG
-#define DBG(x)  x
-#else
-#define DBG(x)
-#endif // SONIC_DEBUG
-
-
-
-
 int getRSCodeLen(int srcLen)
 {
     return (srcLen + RS_DATA_LEN - 1) / RS_DATA_LEN * RS_TOTAL_LEN;
@@ -37,8 +26,6 @@ bool rsDecode(std::vector<int> const& res, std::vector<int> const& rrr, std::str
     }
 
     for (int k = 0; k < RS_TOTAL_LEN; k++) {
-        DBG(printf("~~~~~~~ %02d :", k));
-
         for (int i=0, j=0; i<RS_TOTAL_LEN; i++, j++) {
 
             if (i <= k) {
@@ -46,11 +33,7 @@ bool rsDecode(std::vector<int> const& res, std::vector<int> const& rrr, std::str
             } else {
                 temp[j] = rrr[i];
             }
-
-            DBG(printf("%02d ", temp[j]));
         }
-
-        DBG(printf(" ~~~~~~~ "));
 
         RS *rs = init_rs(RS_SYMSIZE, RS_GFPOLY, RS_FCR, RS_PRIM, RS_NROOTS, RS_PAD);
         int eras_pos[RS_TOTAL_LEN] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -91,11 +74,8 @@ bool rsDecode(std::vector<int> const& res, std::vector<int> const& rrr, std::str
         vote(temp_vote, RS_TOTAL_LEN, &final_result[i]);
     }
 
-    DBG(printf("\n ================== final result ================== \n\n"));
-
     int ret = false;
     if (counter == 0) {
-        DBG(printf("fail!"));
 #ifdef __ANDROID__
         __android_log_print(ANDROID_LOG_WARN, "JNIMsg", "Failed");
 #endif
@@ -132,10 +112,6 @@ bool rsDecode(std::vector<int> const& res, std::vector<int> const& rrr, std::str
             printf("checksum failed! checksum(%02x)\n", checksum);
         }
     }
-
-    DBG(printf("\n\n================  end  ==================\n"));
-
-    //printf("\n");
     
     return ret;
 }

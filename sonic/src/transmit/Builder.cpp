@@ -89,7 +89,6 @@ int makeWave(int sampleRate, int sampleChannels, double duration, std::vector<un
     std::vector<unsigned int> freqValues(freqCount);
     for(int i = 0; i < freqCount; ++i) {
         num_to_freq(freqIndexes[i], &freqValues[i]);
-        //printf("v:%d\n", freqValues[i]);
     }
 
     int pcm_count = sample_num * freqCount;
@@ -115,7 +114,6 @@ int makeWave(int sampleRate, int sampleChannels, double duration, int freqIndexe
     std::vector<unsigned int> freqValues(freqCount);
     for (int i = 0; i < freqCount; ++i) {
         num_to_freq(freqIndexes[i], &freqValues[i]);
-        //printf("v:%d\n", freqValues[i]);
     }
 
     makeChirp(out, pcm_count, freqValues.data(), freqCount, duration, sampleRate, sampleChannels);

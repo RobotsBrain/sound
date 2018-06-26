@@ -10,17 +10,6 @@
 
 
 
-
-//#define SONIC_DEBUG
-
-#ifdef SONIC_DEBUG
-#define DBG(x)  x
-#else
-#define DBG(x)
-#endif // SONIC_DEBUG
-
-
-
 #define QUEUE_COUNT     32
 #define QUEUE_LENGTH    20
 
@@ -78,10 +67,8 @@ bool resultWithTimeSlice(queue* savedBuffer, std::vector<int>& res, std::vector<
     float minValue = fmin(queue_item_at_index(q17, 2), queue_item_at_index(q19, 3));
     minValue = fmax(minValue, queue_item_at_index(q17, 0) * 0.7);
     float maxValue = fmax(queue_item_at_index(q17, 0), queue_item_at_index(q19, 1)) * 1.85;
-    DBG(printf("minValue(%f) maxValue(%f)\n", minValue, maxValue));
     //printf("\n================= start:(19[0]=%f), (17[2]=%f), (19[3]=%f), (17[0]*0.7=%f), (minValue=%f) ==================\n\n",
-    //    queue_item_at_index(q19, 0), queue_item_at_index(q17, 2), queue_item_at_index(q19, 3), queue_item_at_index(q17, 0) * 0.7, minValue);
-    DBG(dump_queue(q17, q19));
+    // queue_item_at_index(q19, 0), queue_item_at_index(q17, 2), queue_item_at_index(q19, 3), queue_item_at_index(q17, 0) * 0.7, minValue);
 
     //if (minValue > maxValue || minValue < 0.4)
     //{
@@ -164,8 +151,6 @@ bool CCodeQueue::getResult(std::vector<int>& res, std::vector<int>& rrr)
 
 bool CCodeQueue::clearQueue()
 {
-    DBG(printf("clear_all_queue\n"));
-
     for (int i = 0; i < QUEUE_COUNT; ++i) {
         while (!queue_is_empty(&mImpl->savedBuffer[i])) {
             dequeue(&mImpl->savedBuffer[i]);
