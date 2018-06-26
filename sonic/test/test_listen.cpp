@@ -36,14 +36,13 @@ int test_listen(const char* filename, int sampleRate, int channel, double durati
             }
         }
 
-        Base::CBuffer result;
-        if (listener.GetResult(result)) {
-            printf("result success!\n");
-            char* data = (char*)result.GetBuffer();
-            int len = result.Size();
+        char result[32] = {0};
+        int len = 0;
+
+        if (listener.GetResult(result, &len)) {
             std::string str;
-            std::copy(data, data + len, std::back_inserter(str));
-            printf("result(%s)\n", str.c_str());
+            std::copy(result, result + len, std::back_inserter(str));
+            printf("get data success, result(%s)\n", str.c_str());
             break;
         }
 

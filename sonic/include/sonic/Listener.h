@@ -1,8 +1,6 @@
 #ifndef __SONIC_LISTENER_H__
 #define __SONIC_LISTENER_H__
 
-#include "base/Buffer.h"
-
 
 namespace Sonic {
 
@@ -16,7 +14,7 @@ public:
     bool Stop();
 
     bool PutFrame(char* pdata, int len);
-    bool GetResult(Base::CBuffer& result);
+    bool GetResult(char* pdata, int* plen);
 
 private:
     CListener(CListener const&);

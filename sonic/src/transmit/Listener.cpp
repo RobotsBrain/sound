@@ -9,6 +9,7 @@
 
 #include "base/Mutex.h"
 #include "base/LoopThread.h"
+#include "base/Buffer.h"
 #include "base/Packet.h"
 #include "base/MemoryPool.h"
 #include "base/SingletonPool.h"
@@ -288,9 +289,18 @@ bool CListener::PutFrame(char* pdata, int len)
     return mImpl->impl.PutFrame(pdata, len);
 }
 
-bool CListener::GetResult(Base::CBuffer& result)
+bool CListener::GetResult(char* pdata, int* plen)
 {
-    return mImpl->impl.GetResult(result);
+    bool res = false;
+    Base::CBuffer result;
+
+    res = mImpl->impl.GetResult(result);
+    if(res) {
+        *plen = result.Size();
+        memcpy(pdata, (char*)result.GetBuffer(), *plen);
+    }
+
+    return res;
 }
 
 
