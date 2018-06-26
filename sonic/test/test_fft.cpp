@@ -148,7 +148,7 @@ int main(int argc, char* argv[])
 
     while((res = getopt(argc, argv, "?f:p:s:d:c:h")) != -1) {
         switch(res) {
-        case 't':
+        case 'f':
             strcpy(fft, optarg);
             break;
 

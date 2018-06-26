@@ -4,12 +4,8 @@
 
 namespace Sonic {
 
-
 class CBuilder
 {
-    CBuilder(CBuilder const&);
-    CBuilder& operator=(CBuilder const&);
-
 public:
     CBuilder();
     ~CBuilder();
@@ -17,11 +13,12 @@ public:
     void SetSampleParams(int sampleRate, int channel, double duration);
     bool SetContent(void const* content, int bytes);
 
-    /// read pcm until no data, return valid bytes
     int ReadPcm(void* buf, int bytes);
-
-    /// get audio all milliseconds
     int GetDuration();
+
+private:
+    CBuilder(CBuilder const&);
+    CBuilder& operator=(CBuilder const&);
 
 private:
     struct Impl;

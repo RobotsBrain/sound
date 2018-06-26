@@ -1,19 +1,13 @@
 #ifndef __SONIC_LISTENER_H__
 #define __SONIC_LISTENER_H__
 
-
-#include "base/Packet.h"
 #include "base/Buffer.h"
 
 
 namespace Sonic {
 
-
 class CListener
 {
-    CListener(CListener const&);
-    CListener& operator=(CListener const&);
-
 public:
     CListener();
     ~CListener();
@@ -21,8 +15,12 @@ public:
     bool Start(int sampleRate, int sampleChannels, double duration);
     bool Stop();
 
-    bool PutFrame(Base::CPacket const& frame);
+    bool PutFrame(char* pdata, int len);
     bool GetResult(Base::CBuffer& result);
+
+private:
+    CListener(CListener const&);
+    CListener& operator=(CListener const&);
 
 private:
     struct Impl;

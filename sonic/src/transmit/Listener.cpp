@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <assert.h>
 #include <string>
 #include <vector>
 #include <deque>
@@ -9,6 +10,8 @@
 #include "base/Mutex.h"
 #include "base/LoopThread.h"
 #include "base/Packet.h"
+#include "base/MemoryPool.h"
+#include "base/SingletonPool.h"
 
 #include "config.h"
 #include "FreqParser.h"
@@ -18,6 +21,26 @@
 
 
 namespace Sonic {
+
+struct AudioPacketPoolTag {};
+typedef Base::TSingletonPool<AudioPacketPoolTag, 4096, Base::CMemoryPool, Base::CMutex, 1, 0> SingletonPool;
+
+static void* PoolAlloc(size_t bytes, size_t& alloc_bytes)
+{
+    assert(bytes <= SingletonPool::requested_size);
+    alloc_bytes = SingletonPool::requested_size;
+    return SingletonPool::malloc();
+}
+
+static void PoolFree(void* ptr, size_t alloc_bytes)
+{
+    SingletonPool::free(ptr);
+}
+
+inline Base::CPacket create_frame(int framesize)
+{
+    return Base::CPacketFactory::Create(framesize, 0, PoolAlloc, PoolFree);
+}
 
 class CListenerImpl : public Base::CLoopThread
 {
@@ -58,8 +81,13 @@ public:
         return true;
     }
 
-    bool PutFrame(Base::CPacket const& frame)
+    bool PutFrame(char* pdata, int len)
     {
+        Base::CPacket frame = create_frame(len);
+        frame.SetDataRange(0, len);
+        memcpy(frame.Data(), pdata, len);
+        frame.SetDataRange(0, len);
+
         Base::CMutex::ScopedLock lock(mFramesMutex);
         if (mFrames.size() < 32) {
             mFrames.push_back(frame);
@@ -255,9 +283,9 @@ bool CListener::Stop()
     return mImpl->impl.Stop();
 }
 
-bool CListener::PutFrame(Base::CPacket const& frame)
+bool CListener::PutFrame(char* pdata, int len)
 {
-    return mImpl->impl.PutFrame(frame);
+    return mImpl->impl.PutFrame(pdata, len);
 }
 
 bool CListener::GetResult(Base::CBuffer& result)
